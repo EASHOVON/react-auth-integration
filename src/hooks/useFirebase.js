@@ -1,57 +1,64 @@
 import { useEffect, useState } from "react"
-import initializeAuthentication from '../Firebase/firebase.init';
-import { getAuth, signInWithPopup, GoogleAuthProvider, GithubAuthProvider, onAuthStateChanged, signOut } from "firebase/auth";
+import initializeAuthenticaion from "../Firebase/firebase.init";
+import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, GithubAuthProvider, signOut } from "firebase/auth";
 
+initializeAuthenticaion();
 
-initializeAuthentication();
-
-const useFirebase = () => {
+const useFirebase = () =>
+{
     const [user, setUser] = useState({});
     const [error, setError] = useState('');
-
-    const auth = getAuth()
+    const auth = getAuth();
     const googleProvider = new GoogleAuthProvider();
     const githubProvider = new GithubAuthProvider();
-
-    const signInUsingGoogle = () => {
+    const signInUsingGoogle = () =>
+    {
         signInWithPopup(auth, googleProvider)
-            .then(result => {
+            .then(result =>
+            {
                 console.log(result.user);
                 setUser(result.user);
             })
-            .catch(error => {
-                setError(error.message);
+            .catch(error =>
+            {
+                setError(error.message)
             })
     }
-
-    const signInUsingGithub = () => {
+    // Something
+    const signInUsingGithub = () =>
+    {
         signInWithPopup(auth, githubProvider)
-            .then(result => {
+            .then(result =>
+            {
                 setUser(result.user);
             })
     }
 
-    const logout = () => {
+    const logOut = () =>
+    {
         signOut(auth)
-            .then(() => {
+            .then(() =>
+            {
                 setUser({});
             })
     }
-
-    useEffect(() => {
-        onAuthStateChanged(auth, user => {
-            if (user) {
+    useEffect(() =>
+    {
+        onAuthStateChanged(auth, user =>
+        {
+            if (user)
+            {
+                console.log('inside state change', user);
                 setUser(user);
             }
         })
-    }, []);
-
+    }, [])
     return {
         user,
         error,
         signInUsingGoogle,
-        signInUsingGithub,
-        logout
+        logOut,
+        signInUsingGithub
     }
 }
 
